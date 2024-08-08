@@ -17,7 +17,7 @@ const Page = () => {
     setCategory(category);
   };
   return (
-    <View style={{ flex: 1, marginTop: -70 }}>
+    <View style={{ flex: 1, marginTop: 90 }}>
       <Stack.Screen
         options={{
           header: () => <ExploreHeader onCategoryChanged={onDataChanged} />,

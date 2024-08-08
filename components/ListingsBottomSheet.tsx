@@ -30,7 +30,7 @@ const ListingsBottomSheet = ({ listings, category }: Props) => {
       style={styles.sheetContainer}
 
     >
-      <View style={{ flex: 1 }}>
+      <View style={styles.contentContainer}>
         <Listings listings={listings} category={category} refresh={refresh} />
         <View style={styles.absoluteBtn}>
           <TouchableOpacity onPress={showMap} style={styles.btn}>
@@ -43,6 +43,9 @@ const ListingsBottomSheet = ({ listings, category }: Props) => {
   );
 };
 const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+  },
   absoluteBtn: {
     position: "absolute",
     bottom: 30,

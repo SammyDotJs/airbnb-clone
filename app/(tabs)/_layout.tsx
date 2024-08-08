@@ -6,7 +6,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-
 const Layout = () => {
   return (
     <Tabs
@@ -17,9 +16,9 @@ const Layout = () => {
         },
         tabBarStyle: {
           paddingVertical: 10,
-          height:60,
-          borderTopWidth:0
-        }
+          height: 60,
+          borderTopWidth: 0,
+        },
       }}
     >
       <Tabs.Screen
@@ -66,6 +65,7 @@ const Layout = () => {
         name="profile"
         options={{
           tabBarLabel: "Profile",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" color={color} size={size} />
           ),

@@ -6,6 +6,7 @@ const SafeArea = ({ children }: any) => {
   return (
     <SafeAreaView
       style={{
+        flex:1,
         backgroundColor: "#fff",
         paddingTop: StatusBar.currentHeight,
       }}

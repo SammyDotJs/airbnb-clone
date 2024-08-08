@@ -1,20 +1,192 @@
-import { View, Text, Button } from "react-native";
-import React from "react";
-import { useAuth } from "@clerk/clerk-expo";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TextInput,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
+import Colors from "@/constants/Colors";
+import { Ionicons } from "@expo/vector-icons";
+import SafeArea from "@/components/utils/SafeArea";
+import { defaultStyles } from "@/constants/Styles";
+import * as ImagePicker from "expo-image-picker";
 
 const Profile = () => {
   const { signOut, isSignedIn } = useAuth();
+  const { user } = useUser();
+  const [firstName, setFirstName] = useState(user?.firstName);
+  const [lastName, setLastName] = useState(user?.lastName);
+  const [email, setEmail] = useState(user?.emailAddresses[0].emailAddress);
+  const [edit, setEdit] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setEmail(user.emailAddresses[0].emailAddress);
+  }, [user]);
+
+  const onSaveUser = async () => {
+    try {
+      if (!firstName || !lastName)
+        await user?.update({
+          firstName,
+          lastName,
+        });
+    } catch (err) {
+      console.error(err);
+    }
+    setEdit(false);
+  };
+
+  const onCaptureImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.75,
+      base64: true,
+    });
+    if (!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64}`;
+      user?.setProfileImage({
+        file: base64,
+      });
+    }
+  };
+
   return (
-    <View>
-      <Button title='Log Out' onPress={() => signOut()} />
-      {!isSignedIn && (
-        <Link href={"/(modals)/login"}>
-          <Text>Login</Text>
-        </Link>
-      )}
-    </View>
+    <SafeArea>
+      <View>
+        <View style={styles.headerContainer}>
+          <Text style={styles.header}>Profile</Text>
+          <Ionicons name="notifications-outline" size={26} />
+        </View>
+        {user && (
+          <View style={styles.card}>
+            <TouchableOpacity onPress={onCaptureImage}>
+              <Image source={{ uri: user?.imageUrl }} style={styles.avatar} />
+            </TouchableOpacity>
+            <View style={{ flexDirection: "row", gap: 6 }}>
+              {edit ? (
+                <View style={styles.editRow}>
+                  <TextInput
+                    placeholder="First name"
+                    value={firstName || ""}
+                    onChangeText={setFirstName}
+                    style={[defaultStyles.inputField, { width: 100 }]}
+                  />
+                  <TextInput
+                    placeholder="Last name"
+                    value={lastName || ""}
+                    onChangeText={setLastName}
+                    style={[defaultStyles.inputField, { width: 100 }]}
+                  />
+                  <TouchableOpacity onPress={onSaveUser}>
+                    <Ionicons
+                      name="checkmark-outline"
+                      size={24}
+                      color={Colors.dark}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View style={styles.editRow}>
+                  <Text style={{ fontFamily: "mon-b", fontSize: 22 }}>
+                    {firstName} {lastName}
+                  </Text>
+                  <TouchableOpacity onPress={() => setEdit(true)}>
+                    <Ionicons
+                      name="create-outline"
+                      size={24}
+                      color={Colors.dark}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+            <Text>{email}</Text>
+            <Text>{user?.userCreatedAt?.toLocaleString()}</Text>
+          </View>
+        )}
+        {isSignedIn && (
+          <TouchableOpacity style={styles.btnOutline} onPress={() => signOut()}>
+            <Text style={styles.btnOutlineText}>Log Out</Text>
+          </TouchableOpacity>
+        )}
+
+        {!isSignedIn && (
+          <Link href={"/(modals)/login"} asChild>
+            <TouchableOpacity style={styles.btnOutline}>
+              <Text style={styles.btnOutlineText}>Log In</Text>
+            </TouchableOpacity>
+          </Link>
+        )}
+      </View>
+    </SafeArea>
   );
 };
 
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 24,
+  },
+  header: {
+    fontFamily: "mon-b",
+    fontSize: 24,
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 16,
+    marginHorizontal: 24,
+    marginTop: 24,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    alignItems: "center",
+    gap: 14,
+    marginBottom: 24,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: Colors.grey,
+  },
+  editRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    height: 50,
+  },
+  btnOutline: {
+    backgroundColor: "#fff",
+    height: 50,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 100,
+    margin: "auto",
+  },
+  btnOutlineText: {
+    color: "#000",
+    fontSize: 16,
+    fontFamily: "mon-sb",
+  },
+});
 export default Profile;

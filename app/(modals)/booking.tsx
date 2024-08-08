@@ -50,7 +50,7 @@ const guestsGropus = [
 ];
 
 const Page = () => {
-  const [openCard, setOpenCard] = useState(2);
+  const [openCard, setOpenCard] = useState(0);
   const [selectedPlace, setSelectedPlace] = useState(0);
   const today = new Date().toISOString().substring(0, 10);
   const [groups, setGroups] = useState(guestsGropus);
@@ -58,6 +58,7 @@ const Page = () => {
   const onClearAll = () => {
     setSelectedPlace(0);
     setOpenCard(0);
+    setGroups(guestsGropus);
   };
   return (
     <BlurView intensity={10} style={styles.container} tint="dark">
@@ -113,10 +114,8 @@ const Page = () => {
                   />
                   <Text
                     style={[
-                      {fontFamily: "mon", paddingTop: 6 },
-                      selectedPlace === index
-                        ? { fontFamily: "mon-sb" }
-                        : null,
+                      { fontFamily: "mon", paddingTop: 6 },
+                      selectedPlace === index ? { fontFamily: "mon-sb" } : null,
                     ]}
                   >
                     {item.title}

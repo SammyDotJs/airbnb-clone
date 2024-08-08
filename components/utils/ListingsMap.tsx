@@ -57,6 +57,7 @@ const ListingsMap = memo(({ listings }: Props) => {
         showsUserLocation
         showsMyLocationButton
         initialRegion={INITIAL_REGION}
+        provider={PROVIDER_GOOGLE}
         clusterColor="#fff"
         clusterTextColor="#000"
         clusterFontFamily="mon-sb"

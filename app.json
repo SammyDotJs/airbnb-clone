@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.airbn_clone.airbnb_clone"
     },
     "web": {
       "bundler": "metro",
@@ -33,6 +34,14 @@
     "experiments": {
       "typedRoutes": true,
       "tsconfigPaths": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "c3f5e90e-3c1f-4d49-bbdf-1b3061977df1"
+      }
     }
   }
 }

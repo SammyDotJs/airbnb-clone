@@ -7,7 +7,6 @@ import { TouchableOpacity } from "react-native";
 import "react-native-reanimated";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import { TokenCache } from "@clerk/clerk-expo/dist/cache/types";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ModalHeaderText from "@/components/ModalHeaderText";
 import Colors from "@/constants/Colors";
@@ -25,10 +24,11 @@ const tokenCache = {
     try {
       return SecureStore.setItemAsync(key, value);
     } catch (err) {
-      return null;
+      return;
     }
   },
 };
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -80,7 +80,7 @@ function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   useEffect(() => {
     if (isLoaded && !isSignedIn) {
-      // router.push("/(modals)/login");
+      router.push("/(modals)/login");
     }
   }, [isLoaded]);
   return (
